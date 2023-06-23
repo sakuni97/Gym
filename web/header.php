@@ -30,7 +30,7 @@ session_start();
   <link href="<?= SYSTEM_PATH ?>assets/vendor/aos/aos.css" rel="stylesheet">
   <link href="<?= SYSTEM_PATH ?>assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="<?= SYSTEM_PATH ?>assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- Variables CSS Files. Uncomment your preferred color scheme -->
   <link href="<?= SYSTEM_PATH ?>assets/css/variables.css" rel="stylesheet">
   <!-- <link href="assets/css/variables-blue.css" rel="stylesheet"> -->

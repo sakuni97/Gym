@@ -1,3 +1,4 @@
+<?php $services = "active" ?>
 <?php include '../header.php'; ?>
 <?php include '../menu.php'; ?>
 
@@ -7,8 +8,13 @@
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
                 <a href="<?= SYSTEM_PATH ?>admin/add_services.php" class="btn btn-sm btn-outline-secondary">Add Services</a>
-                <button type="button" class="btn btn-sm btn-outline-secondary">Search Service</button>
+                <!--                <button type="button" class="btn btn-sm btn-outline-secondary">Search Service</button>-->
             </div>
+
+            <form action="<?= $_SERVER['PHP_SELF'] ?>" method="GET" class="btn-group">
+                <input type="text" name="search" class="form-control" placeholder="Search Services">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">Search</button>
+            </form>
             <!--            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
                             <span data-feather="calendar" class="align-text-bottom"></span>
                             Update Service
@@ -36,9 +42,18 @@
             ?>
         </span> Services</h5>
     <div class="table-responsive">
+
+
         <?php
         $sql = "SELECT * FROM tbl_service";
         $db = dbConn();
+
+        if (isset($_GET['search'])) {
+            $search = $_GET['search'];
+            $sql = "SELECT * FROM tbl_service WHERE Name LIKE '%$search%'";
+        } else {
+            $sql = "SELECT * FROM tbl_service";
+        }
         $result = $db->query($sql);
         ?>
 
@@ -84,14 +99,17 @@
 
                         </tr>
                         <?php
-                        $i++;
+                       $i++;
                     }
-                }
-                ?>
+                }else {
+                echo "<tr><td colspan='5'>No services found.</td></tr>";
+            }
+            ?>
 
             </tbody>
         </table>
     </div>
+
 </main>
 
 <?php include '../footer.php'; ?>       

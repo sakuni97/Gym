@@ -47,21 +47,21 @@
 
                 <div class="d-flex align-items-center mt-4">
                   <i class="bi bi-check2"></i>
-                  <h4>Repudiandae rerum velit modi et officia quasi facilis</h4>
+                  <h4>Training</h4>
                 </div>
-                <p>Laborum omnis voluptates voluptas qui sit aliquam blanditiis. Sapiente minima commodi dolorum non eveniet magni quaerat nemo et.</p>
+                <p>One-to-One Training is a personalized approach to fitness that focuses on individualized attention and guidance within a gym setting. It involves working closely with a qualified personal trainer who tailors workouts and exercises to meet the unique goals and needs of each client. </p>
 
                 <div class="d-flex align-items-center mt-4">
                   <i class="bi bi-check2"></i>
-                  <h4>Incidunt non veritatis illum ea ut nisi</h4>
+                  <h4>Fitness</h4>
                 </div>
-                <p>Non quod totam minus repellendus autem sint velit. Rerum debitis facere soluta tenetur. Iure molestiae assumenda sunt qui inventore eligendi voluptates nisi at. Dolorem quo tempora. Quia et perferendis.</p>
+                <p>Fitness checkup is a comprehensive evaluation conducted to assess an individual's overall physical fitness and health status. It typically involves a series of tests, measurements, and assessments that provide valuable insights into one's cardiovascular endurance, strength</p>
 
                 <div class="d-flex align-items-center mt-4">
                   <i class="bi bi-check2"></i>
-                  <h4>Omnis ab quia nemo dignissimos rem eum quos..</h4>
+                  <h4>Crossfit</h4>
                 </div>
-                <p>Eius alias aut cupiditate. Dolor voluptates animi ut blanditiis quos nam. Magnam officia aut ut alias quo explicabo ullam esse. Sunt magnam et dolorem eaque magnam odit enim quaerat. Vero error error voluptatem eum.</p>
+                <p>CrossFit is a high-intensity fitness program that combines elements of weightlifting, cardio, and functional movements. It emphasizes varied workouts that challenge individuals both physically and mentally. </p>
 
               </div><!-- End Tab 1 Content -->
 

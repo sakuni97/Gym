@@ -56,6 +56,17 @@
         if (empty($pDesc3)) {
             $messages['error_pDesc3'] = "The Description 3 should not be empty..!";
         }
+         if (!empty($pName)) {
+//             $caplock=ucwords($pName);
+             
+            $sql = "SELECT * FROM tbl_pricing WHERE Package_Name='$pName'";
+            $db = dbConn();
+
+            $result = $db->query($sql);
+            if ($result->num_rows > 0) {
+                $messages['error_pName'] = "This name is already taken..!";
+            }
+        }
 
 
 

@@ -9,10 +9,10 @@
                 <a href="<?= SYSTEM_PATH ?>admin/users.php" class="btn btn-sm btn-outline-secondary">View Users</a>
                 <button type="button" class="btn btn-sm btn-outline-secondary">Search Users</button>
             </div>
-<!--            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                <span data-feather="calendar" class="align-text-bottom"></span>
-                Update Users
-            </button>-->
+            <!--            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                            <span data-feather="calendar" class="align-text-bottom"></span>
+                            Update Users
+                        </button>-->
         </div>
     </div>
     <?php
@@ -68,10 +68,13 @@
         if (empty($uUserRole)) {
             $messages['error_uUserRole'] = "The User Role should not be empty..!";
         }
+        if ($_FILES['uImage']['name'] == "") {
+            $messages['error_cimage'] = "The Image should not be empty..!";
+        }
         //adavanced validations
         if (!empty($uPassWord)) {
-            if ($uPassWord < 5) {
-                $messages['error_uPassWord'] = "The Password should be less than 5 characters!";
+            if (strlen($uPassWord) > 5) {
+                $messages['error_bPassWord'] = "The Password shouldn't be more than 5 characters long!";
             }
         }
 
@@ -86,6 +89,20 @@
         if (!empty($uEmail)) {
             if (!filter_var($uEmail, FILTER_VALIDATE_EMAIL)) {
                 $messages['error_uEmail'] = "The email is not well formatted..!";
+            }
+        }
+        //email advanced validation 
+
+        if (!empty($uEmail)) {
+            $file_ext = explode("@", $uEmail);
+            $file_ext = strtolower(end($file_ext));
+
+            $allowed = array("gmail.com", "yahoo.com");
+
+            if (in_array($file_ext, $allowed)) {
+                
+            } else {
+                $messages['error_mEmail'] = "The Email Address Not formatted well..!";
             }
         }
 
@@ -203,6 +220,7 @@
             <label for="designation" class="form-label">Enter the Email</label>
             <input type="text" class="form-control" id="email" name="uEmail" value="<?= @$uEmail; ?>">
             <div class="text-danger"><?= @$messages['error_uEmail']; ?></div>
+            <div class="text-danger"> <?= @$messages['error_mEmail']; ?></div>
         </div>
 
         <div class="mb-3">
@@ -215,6 +233,8 @@
             <label for="password" class="form-label">Enter the Password</label>
             <input type="text" class="form-control" id="password" name="uPassWord" value="<?= @$uPassWord; ?>">
             <div class="text-danger"> <?= @$messages['error_uPassWord']; ?></div>
+            <div class="text-danger"> <?= @$messages['error_bPassWord']; ?></div>
+
         </div>
 
         <div class="mb-3">
@@ -240,6 +260,8 @@
             <label for="Image" class="form-label">Select User Image</label>
             <input class="form-control" type="file" id="Image" name="uImage">
             <div class="text-danger"> <?= @$messages['file_error']; ?></div>
+            <div class="text-danger"> <?= @$messages['error_cimage']; ?></div>
+
         </div>
 
 

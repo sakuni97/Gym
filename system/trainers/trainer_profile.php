@@ -19,20 +19,20 @@
     </div>
 
     <?php
-     extract($_POST);
+    extract($_POST);
     if ($_SERVER['REQUEST_METHOD'] == "POST" && @$action == 'edit') {
-       
+
         $db = dbConn();
         $sql = "SELECT * FROM tbl_users WHERE UserRole ='trainer' AND UserId='$UserId'";
         $results = $db->query($sql);
-        $row = $results->fetch_assoc();       
-       
-        $fName =  $row['FirstName'];
+        $row = $results->fetch_assoc();
+
+        $fName = $row['FirstName'];
         $lName = $row['LastName'];
         $uAddress = $row['Address'];
         $uEmail = $row['Email'];
         $uUserName = $row['UserName'];
-       // $uPassWord = $row['Password'];
+        // $uPassWord = $row['Password'];
         $image = $row['Image'];
     }
 
@@ -46,7 +46,6 @@
         $uEmail = cleanInput($uEmail);
         $uUserName = cleanInput($uUserName);
         //$uPassWord = cleanInput($uPassWord);
-
         //create array variable store validation messages
         $messages = array();
 
@@ -72,7 +71,6 @@
 //        if (empty($uPassWord)) {
 //            $messages['error_uPassWord'] = "The Password should not be empty..!";
 //        }
-
         //adavanced validations
 //        if (!empty($uPassWord)) {
 //            if ($uPassWord < 5) {
@@ -102,7 +100,6 @@
             $filesize = $userimage['size'];
             $fileerror = $userimage['error'];
 
-
             $file_ext = explode(".", $filename);
             $file_ext = strtolower(end($file_ext));
 
@@ -130,18 +127,17 @@
         } else {
             $file_name_new = $prv_image;
         }
-        
+
         //print_r($messages);
 
         if (empty($messages)) {
-            
+
             $AddUser = $_SESSION['UserId'];
-            
+
             $AddDate = date('y-m-d');
             $sql = "UPDATE tbl_users SET Image='$file_name_new',FirstName='$fName',LastName='$lName',Address='$uAddress',Email='$uEmail',UserName='$uUserName',UpdateDate='$AddDate',UpdateUser='$AddUser' WHERE UserId='$UserId'";
-           // echo $sql = "UPDATE tbl_users SET Address='$uAddress' WHERE UserId='$UserId'";
-            
-           // $sql="UPDATE tbl_users SET  Address='$uAddress' WHERE UserId='$UserId' ";
+            // echo $sql = "UPDATE tbl_users SET Address='$uAddress' WHERE UserId='$UserId'";
+            // $sql="UPDATE tbl_users SET  Address='$uAddress' WHERE UserId='$UserId' ";
             //print_r($sql);
             $db = dbConn();
             $db->query($sql);
@@ -153,11 +149,11 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-6">
                 <div class="card">
                     <div class="card-body">
 
-                            <form class="form-horizontal " method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" enctype="multipart/form-data">
+                        <form class="form-horizontal " method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" enctype="multipart/form-data">
                             <fieldset class="fieldset">
                                 <!--                            <h3 class="fieldset-title">Personal Info</h3>-->
                                 <div class="d-flex flex-column align-items-center text-center"  >
@@ -233,7 +229,7 @@
                 </div><!-- comment -->
             </div>
 
-            <div class="col-lg-4">
+            <div class="col-lg-6">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="d-flex align-items-center mb-3">Assigned Gym Members</h5>
@@ -253,6 +249,8 @@
                                             <tr>
                                                 <th scope="col">Name</th>
                                                 <th scope="col">View</th>
+                                                <th scope="col">Account Status</th>
+                                                <th scope="col">Membership Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -263,6 +261,18 @@
                                                     <tr>
                                                         <td><?= $row['First_Name'] ?> </td>
                                                         <td><a href="../members/member_profile.php?MemberId=<?= $row['MemberId'] ?>">View</a></td>
+                                                        <td>
+                                                            <span style=" width: 100px;" class="badge <?php echo $row['Status'] ? 'bg-success' : 'bg-danger' ?>"><?php echo $row['Status'] == 1 ? 'Activated' : 'Deactivated' ?></span>
+                                                        </td>
+                                                        <td>
+                                                            <?php
+                                                            if ($row['Approval_Status'] == 1) {
+                                                                echo '<p class="text-success">Approved</p>';
+                                                            } else {
+                                                                echo'<p class="text-danger">Pending</p>';
+                                                            }
+                                                            ?>
+                                                        </td>
                                                     </tr> 
 
                                                     <?php

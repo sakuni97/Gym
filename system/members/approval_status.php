@@ -8,7 +8,7 @@ $sql="UPDATE tbl_members SET Approval_Status=$approval_status WHERE MemberId=$me
 $db=dbConn();
 $results=$db->query($sql);
 
-        header('location: member_profile.php?MemberId='.$memberid);
+        header('location: member_payments.php?MemberId='.$memberid);
 
 ?>
 

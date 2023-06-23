@@ -19,12 +19,12 @@
                 <img src="assets/img/team/team-1.jpg" class="img-fluid" alt="">
               </div>
               <div class="member-info">
-                <div class="social">
+<!--                <div class="social">
                   <a href=""><i class="bi bi-twitter"></i></a>
                   <a href=""><i class="bi bi-facebook"></i></a>
                   <a href=""><i class="bi bi-instagram"></i></a>
                   <a href=""><i class="bi bi-linkedin"></i></a>
-                </div>
+                </div>-->
                 <h4>Walter White</h4>
                 <span>Coach</span>
               </div>
@@ -37,12 +37,12 @@
                 <img src="assets/img/team/team-2.jpg" class="img-fluid" alt="">
               </div>
               <div class="member-info">
-                <div class="social">
+<!--                <div class="social">
                   <a href=""><i class="bi bi-twitter"></i></a>
                   <a href=""><i class="bi bi-facebook"></i></a>
                   <a href=""><i class="bi bi-instagram"></i></a>
                   <a href=""><i class="bi bi-linkedin"></i></a>
-                </div>
+                </div>-->
                 <h4>Sarah Jhonson</h4>
                 <span>Coach</span>
               </div>
@@ -55,12 +55,12 @@
                 <img src="assets/img/team/team-3.jpg" class="img-fluid" alt="">
               </div>
               <div class="member-info">
-                <div class="social">
+<!--                <div class="social">
                   <a href=""><i class="bi bi-twitter"></i></a>
                   <a href=""><i class="bi bi-facebook"></i></a>
                   <a href=""><i class="bi bi-instagram"></i></a>
                   <a href=""><i class="bi bi-linkedin"></i></a>
-                </div>
+                </div>-->
                 <h4>William Anderson</h4>
                 <span>Coach</span>
               </div>

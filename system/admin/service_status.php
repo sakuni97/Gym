@@ -1,17 +1,13 @@
 <?php
+
 include '../function.php';
 
-
-$id=$_GET['ServiceId'];
+$id = $_GET['ServiceId'];
 $status = $_GET['Status'];
- 
-$sql="UPDATE tbl_service SET Status=$status WHERE ServiceId=$id";
-$db=dbConn();
-$results=$db->query($sql);
 
-        header('location:services.php');
+$sql = "UPDATE tbl_service SET Status=$status WHERE ServiceId=$id";
+$db = dbConn();
+$results = $db->query($sql);
 
-
-
-
+header('location:services.php');
 ?>

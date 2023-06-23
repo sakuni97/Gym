@@ -1,99 +1,113 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>BMI Calculator</title>
-	<style>
-		/* Styles for popup form */
-		.popup {
-			display: none;
-			position: fixed;
-			z-index: 1;
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			overflow: auto;
-			background-color: rgba(0, 0, 0, 0.4);
-		}
 
-		.popup-content {
-			background-color: #fefefe;
-			margin: 15% auto;
-			padding: 20px;
-			border: 1px solid #888;
-			width: 30%;
-			text-align: center;
-			border-radius: 10px;
-			box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.2);
-		}
+    <?php
+    extract($_POST);
+    if ($_SERVER['REQUEST_METHOD'] == "POST" && @$action == 'update') {
 
-		.close {
-			color: #aaa;
-			float: right;
-			font-size: 28px;
-			font-weight: bold;
-			margin-top: -10px;
-			margin-right: -10px;
-			cursor: pointer;
-		}
-
-		.close:hover,
-		.close:focus {
-			color: black;
-			text-decoration: none;
-			cursor: pointer;
-		}
-	</style>
-</head>
-<body>
-	<button onclick="openPopup()">Calculate BMI</button>
-
-	<!-- Popup form for BMI calculator -->
-	<div id="popup-form" class="popup">
-		<div class="popup-content">
-			<span class="close" onclick="closePopup()">&times;</span>
-			<h2>BMI Calculator</h2>
-			<form action="bmi.php" method="POST">
-				<label for="weight">Weight (kg):</label><br>
-				<input type="number" id="weight" name="weight"><br><br>
-				<label for="height">Height (cm):</label><br>
-				<input type="number" id="height" name="height"><br><br>
-				<input type="button" value="Calculate" onclick="calculateBMI()">
-				<div id="result"></div>
-			</form>
-		</div>
-	</div>
-
-	<script>
-		// Open the popup form
-		function openPopup() {
-			document.getElementById("popup-form").style.display = "block";
-		}
-
-		// Close the popup form
-		function closePopup() {
-			document.getElementById("popup-form").style.display = "none";
-		}
-
-		// Calculate the BMI and display the result
-		function calculateBMI() {
-			var weight = document.getElementById("weight").value;
-			var height = document.getElementById("height").value / 100; // convert cm to m
-			var bmi = weight / (height * height);
-			document.getElementById("result").innerHTML = "<h2>Your BMI is: " + bmi.toFixed(2) + "</h2>";
-		}
-	</script>
-</body>
-</html>
-<?php
-                    extract($_POST);
-                    if ($_SERVER['REQUEST_METHOD'] == "POST" && @$action == 'update') {
-
-                        $db = dbConn();
-                        $sql = "SELECT * FROM tbl_members WHERE MemberId='$MemberId'";
-                        $results = $db->query($sql);
-                        $row = $results->fetch_assoc();
+        $db = dbConn();
+        $sql = "SELECT * FROM tbl_members WHERE MemberId='$MemberId'";
+        $results = $db->query($sql);
+        $row = $results->fetch_assoc();
 
 //    echo $MemberId;
-                    }
-                    ?>
+    }
+    ?>
+
+
+
+    <?php $sql = "SELECT tbl_reservations.QueryNo AS queryno, tbl_reservations.ResDate AS rdate, tbl_reservations.ResTime AS rtime,
+        tbl_reservations.Status AS stus, tbl_reservations.CounselID AS cid, osms_tbl_counsels.CounselID AS conid,
+        osms_tbl_counsels.FirstName AS fn, osms_tbl_counsels.LastName AS ln, tbl_clients.FirstName AS fcnm, tbl_clients.LastName AS lcnm
+        FROM tbl_reservations, osms_tbl_counsels,tbl_clients 
+        WHERE tbl_reservations.CounselID = osms_tbl_counsels.CounselID AND tbl_clients.ClientID = tbl_reservations.ClientID AND tbl_reservations.Status='3'"; ?>
+
+
+
+
+    <td>
+        <?php
+        if ($row["UserId"] == 0) {
+            echo 'Not Yet assigned';
+        } else {
+            $trainer = $row["UserId"];
+            $sqlw = "SELECT * FROM tbl_users WHERE  UserId=$trainer";
+            $db = dbConn();
+            $resultD = $db->query($sqlw);
+            $rowUPDATE = $resultD->fetch_assoc();
+        }
+        ?>   <?php if ($row["UserId"] != 0) {
+            echo $rowUPDATE['FirstName'];
+        } ?></td>
+
+
+    <!-- filter for members -->
+    <?php
+// Check if filters are set
+    $filter_status = isset($_POST['filter_status']) ? $_POST['filter_status'] : '';
+
+// Build the SQL query
+    $db = dbConn();
+    $sql = "SELECT * FROM tbl_members";
+
+// Add the filter conditions if filter_status is provided
+    if ($filter_status !== '') {
+        // Escape the input to prevent SQL injection
+        $filter_status = mysqli_real_escape_string($db, $filter_status);
+
+        // Append the filter condition to the SQL query
+        if ($filter_status === '0') {
+            $sql .= " WHERE (Approval_Status = '$filter_status' OR Approval_Status IS NULL)";
+        } else {
+            $sql .= " WHERE Approval_Status = '$filter_status'";
+        }
+    }
+
+    $result = $db->query($sql);
+    ?>
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" enctype="multipart/form-data">
+        <label for="filter_status">Filter by Status:</label>
+        <select name="filter_status" id="filter_status">
+            <option value="">--</option>
+            <option value="0"<?php echo ($filter_status === '0') ? " selected" : ""; ?>>Pending</option>
+            <option value="1"<?php echo ($filter_status === '1') ? " selected" : ""; ?>>Approved</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+
+    <!--sir filter-->
+    <?php
+    $sql = "SELECT * FROM tbl_members";
+    $db = dbConn();
+
+    if (isset($_GET['search'])) {
+        $search = $_GET['search'];
+        $sql = "SELECT * FROM tbl_members WHERE First_Name LIKE '%$search%' OR Nic LIKE '%$search%'";
+    } else {
+        $sql = "SELECT * FROM tbl_members";
+    }
+    $result = $db->query($sql);
+    //filter
+    extract($_POST);
+    $where = null;
+    if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        $where = " WHERE Approval_Status='$status'";
+    }
+    echo $sql = "SELECT * FROM tbl_members $where";
+    $db = dbConn();
+
+    $result = $db->query($sql);
+    ?>
+
+    <!-- filter -->
+    <th scope="col">
+
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" enctype="multipart/form-data">
+            <select name="status" onchange="form.submit()">
+                <option value="">--</option>
+                <option value="1">Approved</option>
+                <option value="0">Pending</option>
+            </select>
+        </form>
+        Membership
+    </th>

@@ -67,16 +67,18 @@
                         <a href="details.php" class="list-group-item list-group-item-action py-2 ripple <?= $details ?>">
                             <i class="fas fa-chart-area fa-fw me-3"></i><span>My Details</span>
                         </a>
+                        <a href="workout_plan.php" class="list-group-item list-group-item-action py-2 ripple <?= $workouts ?>"><i
+                                class="fas fa-lock fa-fw me-3"></i><span>My Workout Plan</span></a>
                         <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
                                 class="fas fa-lock fa-fw me-3"></i><span>My Trainer</span></a>
                         <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
                                 class="fas fa-chart-line fa-fw me-3"></i><span>My Analytics</span></a>
-                        <a href="#" class="list-group-item list-group-item-action py-2 ripple">
+                        <a href="payments.php" class="list-group-item list-group-item-action py-2 ripple <?= $payments ?>">
                             <i class="fas fa-chart-pie fa-fw me-3"></i><span>My Payments</span>
                         </a>
-                        <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                                class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a>
-                        <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
+                        <a href="password_reset.php" class="list-group-item list-group-item-action py-2 ripple <?= $password ?>"><i
+                                class="fas fa-chart-bar fa-fw me-3"></i><span>Password Reset</span></a>
+<!--                        <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
                                 class="fas fa-globe fa-fw me-3"></i><span>International</span></a>
                         <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
                                 class="fas fa-building fa-fw me-3"></i><span>Partners</span></a>
@@ -85,7 +87,7 @@
                         <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
                                 class="fas fa-users fa-fw me-3"></i><span>Users</span></a>
                         <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                                class="fas fa-money-bill fa-fw me-3"></i><span>Sales</span></a>
+                                class="fas fa-money-bill fa-fw me-3"></i><span>Sales</span></a>-->
                     </div>
                 </div>
             </nav>

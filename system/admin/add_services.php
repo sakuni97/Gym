@@ -9,10 +9,10 @@
                 <a href="<?= SYSTEM_PATH ?>admin/services.php" class="btn btn-sm btn-outline-secondary">View Services</a>
                 <button type="button" class="btn btn-sm btn-outline-secondary">Search Services</button>
             </div>
-<!--            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                <span data-feather="calendar" class="align-text-bottom"></span>
-                Update Services
-            </button>-->
+            <!--            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                            <span data-feather="calendar" class="align-text-bottom"></span>
+                            Update Services
+                        </button>-->
         </div>
     </div>
     <?php
@@ -24,9 +24,8 @@
         extract($_POST);
 
         //data clean
-        $sName = cleanInput($sName);      
-        $sDesc= cleanInput($sDesc);
-       
+        $sName = cleanInput($sName);
+        $sDesc = cleanInput($sDesc);
 
         //create array variable store validation messages
         $messages = array();
@@ -38,6 +37,9 @@
 
         if (empty($sDesc)) {
             $messages['error_sDesc'] = "The Description  should not be empty..!";
+        }
+        if ($_FILES['image']['name'] == "") {
+            $messages['error_cimage'] = "The Images should not be empty..!";
         }
         //advanced validations
         if (empty($messages)) {
@@ -82,10 +84,9 @@
             $db = dbConn();
             $db->query($sql);
 
-            $sName =  null;
-            $sDesc =  null;
+            $sName = null;
+            $sDesc = null;
 //            $image =  null;
-            
         }
     }
     ?>
@@ -100,7 +101,7 @@
             <input type="text" class="form-control" id="sName" name="sName" value="<?= @$sName; ?>">
             <div class="text-danger"> <?= @$messages['error_sName']; ?></div>
         </div>
-        
+
 
         <div class="mb-3">
             <label for="sDesc" class="form-label">Enter the Description</label>
@@ -112,6 +113,8 @@
             <label for="image" class="form-label">Select Image</label>
             <input class="form-control" type="file" id="image" name="image">
             <div class="text-danger"> <?= @$messages['file_error']; ?></div>
+            <div class="text-danger"> <?= @$messages['error_cimage']; ?></div>
+            
         </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>

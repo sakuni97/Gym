@@ -1,8 +1,9 @@
+<?php $dashboard = "active" ?>
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">
 
-            Welcome <?= $_SESSION['UserRole'] . " " . $_SESSION['FirstName'] ?> !
+            Welcome <?php echo $_SESSION['UserRole'] == "admin" ? 'Front Desk Officer' . ' ' . $_SESSION['FirstName'] . '!' : ''; ?>
 
 
         </h1>
@@ -12,10 +13,7 @@
                 <a href="<?= SYSTEM_PATH ?>members/add_members.php" class="btn btn-sm btn-outline-secondary">Add New Gym Members</a>
 
             </div>
-            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                <span data-feather="calendar" class="align-text-bottom"></span>
-                This week
-            </button>
+            
         </div>
     </div>
 
@@ -28,7 +26,8 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                <a href="<?= SYSTEM_PATH ?>members/members.php"> Total Gym Members</a></div>
+                                <a href="<?= SYSTEM_PATH ?>members/members.php" class="text-decoration-none">Total Gym Members</a>
+                            </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?php
                                 $sql = "SELECT count(*) FROM tbl_members ";
@@ -50,23 +49,37 @@
             </div>
         </div>
 
+
         <!-- Earnings (Monthly) Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Pending Member Requests</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">4 Requests</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                        </div>
+    <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                        <a href="<?= SYSTEM_PATH ?>members/pending_membership.php" class="text-decoration-none">Pending Member Requests</a>
                     </div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        <?php
+                        $sql = "SELECT count(*) FROM tbl_members WHERE Approval_Status = 0";
+                        $db = dbConn();
+                        $result = $db->query($sql);
+
+                        // Display data on web page
+                        while ($row = mysqli_fetch_array($result)) {
+                            echo $row['count(*)'] . " " . "Requests";
+                        }
+                        ?>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
 
         <!-- Earnings (Monthly) Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
@@ -99,22 +112,33 @@
 
         <!-- Pending Requests Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Due Payments</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">1 Payment</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-comments fa-2x text-gray-300"></i>
-                        </div>
+    <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                        <a href="<?= SYSTEM_PATH ?>admin/payments/verify_payments.php" class="text-decoration-none">Payments to Verify</a>
                     </div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        <?php
+                        $sql = "SELECT count(*) FROM tbl_members RIGHT JOIN tbl_payment ON tbl_members.MemberId = tbl_payment.member_id LEFT JOIN tbl_paymonths ON tbl_payment.month_id = tbl_paymonths.month_id WHERE tbl_payment.payment_status = 0";
+                        $db = dbConn();
+                        $result = $db->query($sql);
+
+                        // Display data on web page
+                        while ($row = mysqli_fetch_array($result)) {
+                            echo $row['count(*)'] . " " . "Payments";
+                        }
+                        ?>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
     <h2>Current Users</h2>
@@ -148,9 +172,11 @@
                             <td><?= $row['Title'] . " " . $row['FirstName'] . " " . $row['LastName'] ?></td>
                             <td><?= $row['Address'] ?></td>
                             <td><?= $row['Designation'] ?></td>
-                            <td><?= $row['UserRole'] ?></td>
+                            <td>
+                                <?php echo $row['UserRole'] == "admin" ? 'Front Desk Officer' : $row['UserRole'] ?>
+                            </td>
 
-        <!--                            <td ><?php
+                <!--                            <td ><?php
 //                                if($row['Status']== 1){echo '<p><a href="users/dashboard/user_status.php?UserId='.$row['UserId'].'&Status=0" class="text-success">Active</a></p>';}
 //                                else{
 //                                    echo'<p><a href="users/dashboard/user_status.php?UserId='.$row['UserId'].'&Status=1" class="text-danger">Deactive</a></p>';

@@ -3,14 +3,33 @@
 <?php include 'header.php'; ?>
 <?php include 'menu.php'; ?>
 
+<?php
+extract($_GET);
 
+if ((isset($_GET['membership'])) && $_GET['membership'] == true) {
+    $membership;
+    $db = dbConn();
+    $sqlmembercode = "SELECT * FROM tbl_members WHERE memberCode= '$membership'";
+    $results = $db->query($sqlmembercode);
+    $row = $results->fetch_assoc();
+}
+?>
 <main id="main">
     <section id="login" class="login">
         <div class="container" data-aos="fade-up">
-            <?php if((isset($_GET['success'])) && $_GET['success'] == true){?>
-            <div class="alert alert-success" role="alert">
-                Registration Successful, Please Login
-            </div>
+            <?php if ((isset($_GET['success'])) && $_GET['success'] == true) { ?>
+                <div class="alert alert-success" role="alert">
+                    Registration Successful, You have Registered as,
+                    <br>
+                     Name: <?= @$row['First_Name'] . " " . @$row['Last_Name'] ?>
+                     <br>
+                     Date of Birth : <?= @$row['Dob'] ?>
+                     <br>
+                     Address : <?= @$row['Address_Line1'] . "," . " ". @$row['Address_Line2']?>
+                     <br>
+                     Contact Number : <?= @$row['Contact'] ?>
+                    
+                </div>
             <?php }; ?>
             <div class="section-header">
                 <h2>Please Login to Continue...</h2>
@@ -109,8 +128,7 @@
                         $db = dbConn();
                         $Password = sha1($Password);
 
-                        //$sql = "SELECT * FROM tbl_members WHERE Email='$Email' AND Password='$Password' ";
-                        $sql = "SELECT * FROM tbl_members WHERE Email='$Email' AND Password='$Password' ";
+                        $sql = "SELECT * FROM tbl_members WHERE Email='$Email' AND Password='$Password' AND Status = 1 ";
                         $result = $db->query($sql);
                         $result->num_rows;
                         if ($result->num_rows <= 0) {
@@ -128,11 +146,12 @@
                             $_SESSION['Contact'] = $row['Contact'];
                             $_SESSION['Emergency_Contact'] = $row['Emergency_Contact'];
                             $_SESSION['Address'] = $row['Address'];
-                            $_SESSION['Age'] = $row['Age'];
+                            $_SESSION['Dob'] = $row['Dob'];
                             $_SESSION['Weight'] = $row['Weight'];
                             $_SESSION['Height'] = $row['Height'];
                             $_SESSION['Status'] = $row['Status'];
                             $_SESSION['Approval_Status'] = $row['Approval_Status'];
+                            $_SESSION['memberpassword'] = $row['Password'];
 
                             header("Location:members/profile.php");
                         }
@@ -147,15 +166,12 @@
                         <form  method="post"  action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
                             <div class="imgcontainer">
                                 <img src="assets/img/log.jpg" alt="Avatar" class="avatar" width="20rem">
-                            </div>
-
-
-
-                            <div class="text-danger">  
-                                <?php echo @$messages['error_invalid']; ?>
-                            </div>
+                            </div>                          
 
                             <div class="container col-md-10">
+                                <div class="text-danger">  
+                                    <?php echo @$messages['error_invalid']; ?>
+                                </div>
                                 <label for="uname"><b>Email</b></label>
                                 <div class="text-danger">  
                                     <?php echo @$messages['error_username']; ?>
@@ -167,6 +183,7 @@
                                     <?php echo @$messages['error_password']; ?>
                                 </div>
                                 <input  class="login" type="password" placeholder="Enter Password" id="Password" name="Password" >
+                                <span class="toggle-password bi bi-eye" onclick="togglePasswordVisibility()"></span>
 
 
 
@@ -178,8 +195,8 @@
 
                             <div class="container" style="background-color:#f1f1f1">
                                 <a class="signupbtn" href="register.php">SignUp</a>
-                                <!--                                <button type="button" class="signupbtn">SignUp</button>-->
-                                <span class="psw">Forgot <a href="#">password?</a></span>
+
+                                <span class="psw"><a href="password_token.php">Forgot password</a></span>
                             </div>
                         </form>
                     </div>
@@ -187,5 +204,20 @@
                 </div>
 
                 </main>
+                <script>
+                    function togglePasswordVisibility() {
+                        var passwordInput = document.getElementById("Password");
+                        var eyeIcon = document.querySelector(".toggle-password");
+                        if (passwordInput.type === "password") {
+                            passwordInput.type = "text";
+                            eyeIcon.classList.remove("bi-eye");
+                            eyeIcon.classList.add("bi-eye-slash");
+                        } else {
+                            passwordInput.type = "password";
+                            eyeIcon.classList.remove("bi-eye-slash");
+                            eyeIcon.classList.add("bi-eye");
+                        }
+                    }
+                </script>
                 <?php include 'footer.php'; ?>
                 <?php ob_end_flush(); ?>

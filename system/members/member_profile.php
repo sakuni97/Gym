@@ -8,25 +8,23 @@
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
                 <a href="<?= SYSTEM_PATH ?>members/members.php" class="btn btn-sm btn-outline-secondary">View All Members</a>
-                <button type="button" class="btn btn-sm btn-outline-secondary">Search Members</button>
+
             </div>
-            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                <span data-feather="calendar" class="align-text-bottom"></span>
-                Update Members
-            </button>
+
         </div>
     </div>
 
     <?php
     extract($_POST);
-    
+
     if ($_SERVER['REQUEST_METHOD'] == "POST" && @$action == 'update') {
 //        print_r(@$action);die();
         //seperate variables and values from the form
         //data clean
         $mContact = cleanInput($mContact);
         $mEmergency = cleanInput($mEmergency);
-        $mAddress = cleanInput($mAddress);
+        $mAddressline1 = cleanInput($mAddressline1);
+        $mAddressline2 = cleanInput($mAddressline2);
 
         $mHeight = cleanInput($mHeight);
         $mWeight = cleanInput($mWeight);
@@ -45,9 +43,13 @@
             $messages['error_mWeight'] = "The Weight should not be empty..!";
         }
 
-        if (empty($mAddress)) {
-            $messages['error_mAddress'] = "The Address should not be empty..!";
+        if (empty($mAddressline1)) {
+            $messages['error_mAddress1'] = "The Address line 1 should not be empty..!";
         }
+        if (empty($mAddressline2)) {
+            $messages['error_mAddress2'] = "The Address line 2 should not be empty..!";
+        }
+
         if (empty($mContact)) {
             $messages['error_mContact'] = "The contact number should not be empty..!";
         }
@@ -60,22 +62,17 @@
         if (empty($mTrainer)) {
             $messages['error_mTrainer'] = "The Trainer should be selected..!";
         }
-        print_r($messages);
+        //print_r($messages);
         if (empty($messages)) {
 
 
-            $sql5 = "UPDATE tbl_members SET Contact='$mContact',Emergency_Contact='$mEmergency',Address='$mAddress',Height='$mHeight',Weight='$mWeight',PricingId='$mPackage',UserId='$mTrainer' WHERE MemberId='$MemberId'";
-            // echo $sql = "UPDATE tbl_users SET Address='$uAddress' WHERE UserId='$UserId'";
-            // $sql="UPDATE tbl_users SET  Address='$uAddress' WHERE UserId='$UserId' ";
-            print_r($sql5);
+            $sql5 = "UPDATE tbl_members SET Contact='$mContact',Emergency_Contact='$mEmergency',Address_Line1='$mAddressline1',Address_Line2='$mAddressline2',Height='$mHeight',Weight='$mWeight',PricingId='$mPackage',UserId='$mTrainer' WHERE MemberId='$MemberId'";
+
             $db = dbConn();
             $db->query($sql5);
-
-//            header("Location: member_profile.php?MemberId=$MemberIdedit");
-            //print_r($db);
         }
 
-        if (false) {
+        if (true) {
             ?>
             <script>
                 Swal.fire({
@@ -84,13 +81,12 @@
                     text: 'Member details changed successfully'
                 })
             </script>
-            <?php
-            ?>
+        <?php ?>
             <?php
         }
     }
-    
-    
+
+
     if ($_SERVER['REQUEST_METHOD'] == "POST" || $_SERVER['REQUEST_METHOD'] == "GET") {
         $MemberIdedit = isset($_GET['MemberId']) ? $_GET['MemberId'] : $_POST['MemberId'];
 
@@ -101,21 +97,16 @@
 
         $mContactz = $row['Contact'];
         $mEmergencyz = $row['Emergency_Contact'];
-        $mAddressz = $row['Address'];
+        $mAddressline11z = $row['Address_Line1'];
+        $mAddressline2z = $row['Address_Line2'];
+
         $mDobz = $row['Dob'];
         $mHeightz = $row['Height'];
         $mWeightz = $row['Weight'];
     }
 
 //    echo $MemberId;
-
-
-    
     ?>
-
-
-
-
 
     <div class="container">
         <div class="main-body">
@@ -138,6 +129,10 @@
                             <hr class="my-4">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                    <h6 class="mb-0">Gender</h6>
+                                    <span class="text-secondary"><?= $row['Gender'] ?></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                                     <h6 class="mb-0">First Name</h6>
                                     <span class="text-secondary"><?= $row['First_Name'] ?></span>
                                 </li>
@@ -158,59 +153,68 @@
                                     <span class="text-secondary"><?= $row['Dob'] ?></span>
                                 </li>
 
+                                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                    <h6 class="mb-0">Workout Plan</h6>
+
+<?php
+$db = dbConn();
+$sql = "SELECT * FROM tbl_members INNER JOIN tbl_workouts ON tbl_members.WorkoutId = tbl_workouts.WorkoutId WHERE MemberId='$MemberIdedit' ";
+//$sql2 = "SELECT * FROM tbl_workouts";
+//$sql = "SELECT * FROM tbl_members, tbl_workouts.WorkoutId as WorkoutIds, tbl_workouts.Workout_Name as Workout_Name  FROM tbl_workouts ON tbl_members.WorkoutId = tbl_workouts.WorkoutId WHERE MemberId='$MemberIdedit' ";
+//echo $sql = "SELECT tbl_members.MemberId AS MemberId, tbl_members.Title AS Title,tbl_members.First_Name AS First_Name,tbl_members.Last_Name AS Last_Name,tbl_members.Nic AS Nic,tbl_members.Dob AS Dob,tbl_members.Height AS Height,tbl_members.Weight AS Weight,tbl_members.Address AS Address,tbl_members.Contact AS Contact,tbl_members.Emergency_Contact AS Emergency_Contact,tbl_members.Joined_Date AS Joined_Date,tbl_members.Status AS Status,tbl_members.Email AS Email,tbl_members.Approval_Status AS Approval_Status,tbl_members.UserId AS UserId,tbl_members.PricingId AS PricingId,tbl_members.WorkoutId AS WorkoutId,tbl_workouts.WorkoutId AS WorksID,tbl_workouts.Workout_Name AS Workout_Name FROM tbl_members,tbl_workouts WHERE tbl_members.WorkoutId = tbl_workouts.WorkoutId AND MemberId='$MemberIdedit'";
+
+$results = $db->query($sql);
+//$results2 = $db->query($sql2);
+//$joined_data = $results->fetch_assoc();
+//                            print_r($t['WorkoutId']);
+//                            die();
+//                                    
+?>
+
+                                    <?php
+                                    $rowx = $results->fetch_assoc();
+                                    ?>
+
+
+                                    <span class="text-secondary">
+<?php
+if ($rowx != null) {
+    echo $rowx['Workout_Name'];
+} else {
+    echo "Not yet assigned";
+}
+?>
+                                    </span>
+                                </li>
+
                             </ul>
                         </div>
                     </div>
                     <br>
 
-                    <!-- Start of the status grid -->
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <?php
-                                    extract($_POST);
-                                    if (true) {
-                                        $db = dbConn();
-                                        $sql3 = "SELECT * FROM tbl_members WHERE MemberId='$MemberIdedit'";
-                                        $result = $db->query($sql3);
-                                        ?>
-                                        <table class="table table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">Membership Status</th>
-                                                    <th scope="col">Update Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
 
-                                                <?php
-                                                if ($result->num_rows > 0) {
-                                                    while ($row = $result->fetch_assoc()) {
-                                                        $id = $row['MemberId'];
-                                                        $status = $row['Status'];
-                                                        ?>
-                                                        <tr>
-                                                            <td>
-                                                                <span style=" width: 100px;" class="badge <?php echo $row['Approval_Status'] ? 'bg-success' : 'bg-danger' ?>"><?php echo $row['Approval_Status'] == 1 ? 'Approved' : 'Pending' ?></span>
-                                                            </td>
 
-                                                            <td>
-                                                                <a style=" width: 100px; height: 30px;" class="btn btn-secondary btn-sm" href="<?php echo $row['Approval_Status'] == 1 ? 'approval_status.php?MemberId=' . $row['MemberId'] . '&Approval_Status=0' : 'approval_status.php?MemberId=' . $row['MemberId'] . '&Approval_Status=1'; ?>"><?php echo $row['Approval_Status'] == 1 ? 'Reject' : 'Approve' ?></a>
-                                                            </td>
-                                                        </tr>
-                                                        <?php
-                                                    }
-                                                }
-                                            }
-                                            ?> 
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
+                    <!--                    <br>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        
+                                                        <div class="row mb-3">
+                                                        <div class="col-sm-3">
+                                                            <h6 class="mb-0">Requested Dates</h6>
+                                                        </div>
+                                                        <div class="col-sm-9 text-secondary">
+                                                            <input type="text" class="form-control" name="mContact" value="<?= @$mContactz ?>">
+                                                            <div class="text-danger"><?= @$messages['error_mContact']; ?></div>
+                                                        </div>
+                                                    </div>
+                                                            
+                                                    </div>
+                                                </div>
+                    
+                                            </div>
+                                        </div>-->
                 </div>
 
                 <!-- Start of the data changable form  -->
@@ -241,17 +245,90 @@
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0">Address</h6>
+                                        <h6 class="mb-0">Address Line 1 </h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="mAddress" value="<?= @$mAddressz ?>">
-                                        <div class="text-danger"><?= @$messages['error_mAddress']; ?></div>
+                                        <input type="text" class="form-control" name="mAddressline1" value="<?= $mAddressline11z ?>">
+                                        <div class="text-danger"><?= @$messages['error_mAddress1']; ?></div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-3">
+                                        <h6 class="mb-0">Address Line 2 </h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary">
+                                        <input type="text" class="form-control" name="mAddressline2" value="<?= $mAddressline2z ?>">
+                                        <div class="text-danger"><?= @$messages['error_mAddress2']; ?></div>
+
+                                        <br>
+
+<!--                                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-4 pb-2">
+                                                <div class="form-outline">
+                                                    <select id="district" name="mDistrict" class="form-control">
+                                                        <option value="<?= $row['District'] ?>"></option>
+                                                         Populate dropdown options dynamically from the JSON data 
+<?php
+// Read the JSON file and parse the data
+//                                                        $jsonString = file_get_contents('lk.json');
+//                                                        $data = json_decode($jsonString, true);
+//
+//                                                        // Loop through the districts in the JSON data and create dropdown options
+//                                                        foreach ($data as $district => $cities) {
+//                                                            echo '<option value="' . $district . '">' . $district . '</option>';
+//                                                        }
+?>
+                                                    </select>
+                                                    <label class="form-label" for="form3Examplev4">District</label>
+                                                    <div class="text-danger"><?= @$messages['error_mDistrct']; ?></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6 mb-4 pb-2">
+                                                <div class="form-outline">
+                                                    <select id="city" name="mCity" class="form-control">
+                                                        <option value="<?= $row['City'] ?>"></option>
+                                                    </select>
+                                                    <label class="form-label" for="form3Examplev4">City</label>
+                                                    <div class="text-danger"><?= @$messages['error_mCity']; ?></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <script>
+        $(document).ready(function () {
+            // Triggered when the district selection changes
+            $('#district').change(function () {
+                var selectedDistrict = $(this).val();
+                var cityDropdown = $('#city');
+
+                // Clear existing city options
+//                cityDropdown.empty();
+
+                // If a district is selected, fetch the corresponding cities from the JSON data
+                if (selectedDistrict) {
+                    var cities = <?= $jsonString ?>; // Get the JSON data directly from the PHP variable
+
+                    // Find the selected district in the JSON data and retrieve its cities
+                    if (cities[selectedDistrict] && cities[selectedDistrict].cities) {
+                        var districtCities = cities[selectedDistrict].cities;
+
+                        // Populate the city dropdown options
+                        $.each(districtCities, function (index, city) {
+                            cityDropdown.append('<option value="' + city + '">' + city + '</option>');
+                        });
+                    }
+                }
+            });
+        });
+                                        </script> -->
                                     </div>
                                 </div>
 
                                 <div class="row mb-3">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0">Height</h6>
+                                        <h6 class="mb-0">Joined day Height</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
                                         <input type="text" class="form-control" name="mHeight" value="<?= @$mHeightz ?>">
@@ -260,7 +337,7 @@
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0">Weight</h6>
+                                        <h6 class="mb-0">Joined day Weight</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
                                         <input type="text" class="form-control" name="mWeight" value="<?= @$mWeightz ?>">
@@ -269,17 +346,18 @@
                                 </div>
 
 
-                                <?php
-                                $db = dbConn();
-                                $sql1 = "SELECT * FROM tbl_pricing INNER JOIN tbl_members ON tbl_pricing.PricingId = tbl_members.PricingId WHERE MemberId='$MemberIdedit' ";
-                                $sql2 = "SELECT * FROM tbl_pricing ";
 
-                                $results = $db->query($sql1);
-                                $results2 = $db->query($sql2);
-                                $joined_data = $results->fetch_assoc();
+<?php
+$db = dbConn();
+$sql1 = "SELECT * FROM tbl_pricing INNER JOIN tbl_members ON tbl_pricing.PricingId = tbl_members.PricingId WHERE MemberId='$MemberIdedit' ";
+$sql2 = "SELECT * FROM tbl_pricing ";
+
+$results = $db->query($sql1);
+$results2 = $db->query($sql2);
+$joined_data = $results->fetch_assoc();
 //                            print_r($t['PricingId']);
 //                            die();
-                                ?>
+?>
                                 <div class="row mb-3">                             
                                     <div class="col-sm-3">
                                         <h6 class="mb-0">Package</h6>
@@ -288,20 +366,20 @@
 
                                     <div class="col-sm-9 text-secondary">
                                         <select class="select" id="title" name="mPackage">
-                                            <?php
-                                            if ($results2->num_rows > 0) {
-                                                while ($row = $results2->fetch_assoc()) {
-                                                    ?>
+<?php
+if ($results2->num_rows > 0) {
+    while ($row = $results2->fetch_assoc()) {
+        ?>
                                                     <option value="<?= $row['PricingId'] ?>" 
                                                     <?php echo ($joined_data['PricingId'] == $row['PricingId']) ? 'selected="selected"' : ''; ?>
                                                             ><?= $row['Package_Name'] ?></option>
 
 
 
-                                                    <?php
-                                                }
-                                            }
-                                            ?>
+        <?php
+    }
+}
+?>
 
 
                                         </select>
@@ -313,17 +391,17 @@
 
                                 </div>
 
-                                <?php
-                                $db = dbConn();
-                                $sql = "SELECT * FROM tbl_users INNER JOIN tbl_members ON tbl_users.UserId = tbl_members.UserId WHERE MemberId='$MemberIdedit' ";
-                                $sql2 = "SELECT * FROM tbl_users WHERE UserRole='trainer' AND Status='1' ";
+<?php
+$db = dbConn();
+$sql = "SELECT * FROM tbl_users INNER JOIN tbl_members ON tbl_users.UserId = tbl_members.UserId WHERE MemberId='$MemberIdedit' ";
+$sql2 = "SELECT * FROM tbl_users WHERE UserRole='trainer' AND Status='1' ";
 
-                                $results = $db->query($sql);
-                                $results2 = $db->query($sql2);
-                                $joined_data = $results->fetch_assoc();
+$results = $db->query($sql);
+$results2 = $db->query($sql2);
+$joined_data = $results->fetch_assoc();
 //                            print_r($t['PricingId']);
 //                            die();
-                                ?>
+?>
                                 <div class="row mb-3">
                                     <div class="col-sm-3">
                                         <h6 class="mb-0">Trainer</h6>
@@ -331,29 +409,29 @@
                                     <div class="col-sm-9 text-secondary">
 
                                         <select class="select" id="title" name="mTrainer">
-                                            <?php if ($results2->num_rows > 0) { ?>
+<?php if ($results2->num_rows > 0) { ?>
                                                 <option value="0" >--Select Trainer--</option>
                                                 <?php while ($row = $results2->fetch_assoc()) { ?>
 
 
                                                     <option value="<?= $row['UserId'] ?>" 
 
-                                                            <?php echo (($joined_data ) && $joined_data['UserId'] == $row['UserId']) ? 'selected="selected"' : ''; ?>
+        <?php echo (($joined_data ) && $joined_data['UserId'] == $row['UserId']) ? 'selected="selected"' : ''; ?>
                                                             ><?= $row['FirstName'] ?></option>
 
 
 
-                                                    <?php
-                                                }
-                                            }
-                                            ?>
+        <?php
+    }
+}
+?>
 
 
                                         </select>
                                         <div class="text-danger"><?= @$messages['error_mTrainer']; ?></div>
                                     </div>
                                 </div>
-                                <input type="text" name="MemberId" value="<?= $MemberIdedit ?>">
+                                <input type="hidden" name="MemberId" value="<?= $MemberIdedit ?>">
                                 <div class="row">
 
                                     <div class="col-sm-3"></div>
@@ -366,36 +444,81 @@
                     </form>
                     <br>
 
-                    <!-- start of the progress -->
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="d-flex align-items-center mb-3">Progress</h5>
-                                    <p>Attendence</p>
-                                    <div class="progress mb-3" style="height: 5px">
-                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="table-responsive" id="trainersDetails" style="display: none;">
+                                        <table class="table table-striped table-hover table-bordered table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Trainers</th>
+                                                    <th scope="col">Assigned Count of Active & Approved Members</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+<?php
+$sql = "SELECT * FROM tbl_users WHERE UserRole ='trainer' AND Status=1";
+$db = dbConn();
+$result = $db->query($sql);
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $UserId = $row['UserId'];
+        ?>
+                                                        <tr>
+                                                            <td><?= $row['FirstName'] . " " . $row['LastName'] ?></td>
+                                                            <td>
+        <?php
+        $db = dbConn();
+        $sql = "SELECT count(*) FROM tbl_members WHERE UserId='$UserId' AND Status=1 AND Approval_Status=1";
+        $results = $db->query($sql);
+        while ($row = mysqli_fetch_array($results)) {
+            echo $row['count(*)'];
+        }
+        ?>
+                                                            </td>
+                                                        </tr>
+                                                                <?php
+                                                            }
+                                                        } else {
+                                                            ?>
+                                                    <tr>
+                                                        <td colspan="2" class="text-center">No trainers found.</td>
+                                                    </tr>
+    <?php
+}
+?>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                    <p>Workout</p>
-                                    <div class="progress mb-3" style="height: 5px">
-                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <p>One Page</p>
-                                    <div class="progress mb-3" style="height: 5px">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <p>Mobile Template</p>
-                                    <div class="progress mb-3" style="height: 5px">
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <p>Backend API</p>
-                                    <div class="progress" style="height: 5px">
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
+                                </div>
+                                <div class="card-footer text-right">
+                                    <a href="javascript:void(0);" class="btn btn-link" onclick="toggleTable()">
+                                        <i class="fas fa-plus" id="expandIcon"></i> View Trainers Details
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <script>
+                        function toggleTable() {
+                            var trainersDetails = document.getElementById("trainersDetails");
+                            var expandIcon = document.getElementById("expandIcon");
+
+                            if (trainersDetails.style.display === "none") {
+                                trainersDetails.style.display = "block";
+                                expandIcon.classList.remove("fa-plus");
+                                expandIcon.classList.add("fa-minus");
+                            } else {
+                                trainersDetails.style.display = "none";
+                                expandIcon.classList.remove("fa-minus");
+                                expandIcon.classList.add("fa-plus");
+                            }
+                        }
+                    </script>
+
+
                 </div>
             </div>
         </div>
@@ -404,6 +527,9 @@
 
 </div>
 </main>
+
+
+
 
 <?php include '../footer.php'; ?> 
 <?php ob_end_flush(); ?>

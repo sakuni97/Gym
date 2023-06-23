@@ -3,11 +3,9 @@
 <?php include 'menu.php'; ?>
 
 <style>
-
     .wrapper2 {
         position: relative;
         height: 1px;
-
         padding: 0px;
     }
 
@@ -28,6 +26,7 @@
     #open-form-btn:hover {
         opacity: 0.8;
     }
+
     /* Styles for popup form */
     .popup {
         display: none;
@@ -71,7 +70,7 @@
 </style>
 
 <div class="wrapper2">
-    <button id="open-form-btn" onclick="openPopup()">Do you know your BMI ?</button>
+    <button id="open-form-btn" onclick="openPopup()">Do you know your BMI?</button>
 </div>
 
 <!-- Popup form for BMI calculator -->
@@ -79,48 +78,100 @@
     <div class="popup-content">
         <span class="close" onclick="closePopup()">&times;</span>
         <h2>BMI Calculator</h2>
-<!--        <form>-->
-            <label for="weight">Weight (kg):</label><br>
-            <input type="number" id="weight" name="weight"><br><br>
-            <label for="height">Height (cm):</label><br>
-            <input type="number" id="height" name="height"><br><br>
-            <button value="Calculate" onclick="calculateBMI()">Calculate</button>
-            <div id="result"></div>            
-            <div id="result1"></div>
-
-        <!--</form>-->
+        <label for="weight">Weight:</label>
+        <input type="number" id="weight" name="weight" step="any" min="30" max="500">
+        <select id="weight-unit">
+            <option value="kg" selected>Kg</option>
+            <option value="lbs">Lbs</option>
+        </select>
+        <br><br>
+        <label for="height">Height:</label>
+        <input type="number" id="height" name="height" step="any" min="100" max="250">
+        <select id="height-unit">
+            <option value="cm" selected>Cm</option>
+            <option value="ft">Feet</option>
+        </select>
+        <br><br>
+        <button value="Calculate" onclick="calculateBMI()">Calculate</button>
+        <div id="result"></div>
+        <div id="result1"></div>
     </div>
 </div>
 
 <script>
-		// Open the popup form
-		function openPopup() {
-			document.getElementById("popup-form").style.display = "block";
-		}
+    // Open the popup form
+    function openPopup() {
+        document.getElementById("popup-form").style.display = "block";
+    }
 
-		// Close the popup form
-		function closePopup() {
-			document.getElementById("popup-form").style.display = "none";
-		}
+    // Close the popup form
+    function closePopup() {
+        document.getElementById("popup-form").style.display = "none";
+    }
 
-		// Calculate the BMI and display the result
-		function calculateBMI() {
-			var weight = document.getElementById("weight").value;
-			var height = document.getElementById("height").value / 100; // convert cm to m
-			var bmi = weight / (height * height);
-			document.getElementById("result").innerHTML = "<h2>Your BMI is: " + bmi.toFixed(2) + "</h2>";
-                        
-                        if(bmi < 18.5) {
-			 document.getElementById("result1").innerHTML ="<p>You are underweight. You should eat a balanced diet and do some weight training exercises to build muscle mass.</p> <p> We reccomend you our Gold Package. </p>";
-                        }else if(bmi >= 18.5 && bmi < 25) {
-                            document.getElementById("result1").innerHTML ="<p>You have a normal weight. You should maintain a healthy lifestyle by eating a balanced diet and doing regular exercise.</p> <p> We reccomend you our Silver Package. </p>";
-		} else if(bmi >= 25 && bmi < 30) {
-			document.getElementById("result1").innerHTML ="<p>You are overweight. You should reduce your calorie intake, eat a balanced diet, and do some aerobic exercise to burn calories.</p> <p> We reccomend you our Platinum Package. </p>";
-		} else {
-			document.getElementById("result1").innerHTML ="<p>You are obese. You should seek medical advice and make lifestyle changes such as reducing your calorie intake and doing regular exercise.</p>";
-		}
-		}
-	</script>
+    // Calculate the BMI and display the result
+    function calculateBMI() {
+        var weightInput = document.getElementById("weight");
+        var heightInput = document.getElementById("height");
+        var weight = parseFloat(weightInput.value);
+        var height = parseFloat(heightInput.value);
+        var weightUnit = document.getElementById("weight-unit").value;
+        var heightUnit = document.getElementById("height-unit").value;
+
+        // Validate weight and height inputs
+        if (isNaN(weight) || isNaN(height)) {
+            document.getElementById("result").innerHTML = "<p>Please enter valid weight and height values.</p>";
+            document.getElementById("result1").innerHTML = "";
+            return;
+        }
+
+        // Convert weight to Kg if entered in Lbs
+        if (weightUnit === "lbs") {
+            weight = weight * 0.453592;
+        }
+
+        // Convert height to Cm if entered in Feet
+        if (heightUnit === "ft") {
+            height = height * 30.48;
+        }
+
+        // Check if weight or height is out of range
+        if (weight < 30 || weight > 500 || height < 100 || height > 250) {
+            document.getElementById("result").innerHTML = "<p>Please enter weight and height within the valid range.</p>";
+            document.getElementById("result1").innerHTML = "";
+            return;
+        }
+
+        var bmi = weight / ((height / 100) * (height / 100));
+        document.getElementById("result").innerHTML = "<h2>Your BMI is: " + bmi.toFixed(2) + " " + getEmoji(bmi) + "</h2>";
+
+        if (bmi < 18.5) {
+            document.getElementById("result1").innerHTML = "<p>You are underweight. You should eat a balanced diet and do some weight training exercises to build muscle mass.</p><p>We recommend our <a href='http://localhost/Gym/web/register.php?packageId=2'> Gold Package.</p>";
+        } else if (bmi >= 18.5 && bmi < 25) {
+            document.getElementById("result1").innerHTML = "<p>You have a normal weight. You should maintain a healthy lifestyle by eating a balanced diet and doing regular exercise.</p><p>We recommend our <a href='http://localhost/Gym/web/register.php?packageId=1'>Silver Package.</a></p>";
+        } else if (bmi >= 25 && bmi < 30) {
+            document.getElementById("result1").innerHTML = "<p>You are overweight. You should reduce your calorie intake, eat a balanced diet, and do some aerobic exercise to burn calories.</p><p>We recommend our <a href='http://localhost/Gym/web/register.php?packageId=3'>Platinum Package.</p>";
+        } else {
+            document.getElementById("result1").innerHTML = "<p>You are obese. You should seek medical advice and make lifestyle changes such as reducing your calorie intake and doing regular exercise.</p>";
+        }
+
+        function getEmoji(bmi) {
+            if (bmi < 18.5) {
+                return "&#128531;"; // Sad emoji
+            } else if (bmi >= 18.5 && bmi < 25) {
+                return "&#128522;"; // Smiling emoji
+            } else if (bmi >= 25 && bmi < 30) {
+                return "&#128532;"; // Worried emoji
+            } else {
+                return "&#128557;"; // Angry emoji
+            }
+        }
+
+
+    }
+</script>
+
+
 
 
 
@@ -166,12 +217,12 @@
                                 </ul>
 
                                 <div class="text-center mt-auto">
-                                    <a href="register.php?membership=<?php echo $row['PricingId'] ?>" class="buy-btn">Enroll Now</a>
+                                    <a href="register.php?packageId=<?php echo $row['PricingId'] ?>" class="buy-btn">Enroll Now</a>
                                 </div>
 
                             </div>
                         </div><!-- End Pricing Item -->
-                    <?php
+                        <?php
                     }
                 }
                 ?>

@@ -14,7 +14,10 @@ include 'function.php';
         <title>Gym-DASHBOARD</title>
         <link href="<?= SYSTEM_PATH ?>assets/css/bootstrap.min.css" rel="stylesheet" >
         <link href="<?= SYSTEM_PATH ?>assets/css/dashboard.css" rel="stylesheet" type="text/css"/>
+        <link href="<?= SYSTEM_PATH ?>assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.24/sweetalert2.all.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
     </head>
     <body>
         <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">

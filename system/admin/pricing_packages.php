@@ -1,3 +1,4 @@
+<?php $packages = "active" ?>
 <?php include '../header.php'; ?>
 <?php include '../menu.php'; ?>
 
@@ -7,40 +8,52 @@
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
                 <a href="<?= SYSTEM_PATH ?>admin/add_package.php" class="btn btn-sm btn-outline-secondary">Add Packages</a>
-                <button type="button" class="btn btn-sm btn-outline-secondary">Search Packages</button>
+                <form action="<?= $_SERVER['PHP_SELF'] ?>" method="GET" class="btn-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search Packages">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Search</button>
+                </form>
             </div>
-<!--            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                <span data-feather="calendar" class="align-text-bottom"></span>
-                Update Packages
-            </button>-->
         </div>
     </div>
     <?php
     if ((isset($_GET['success'])) && $_GET['success'] == true) {
-
         $message = "Package updated successfully";
-        echo"<script>window.alert('$message');</script>";
+        echo "<script>window.alert('$message');</script>";
     }
     ?>
     <h5><span class="badge bg-primary">
-
             <?php
-            $sql = "SELECT count(*) FROM tbl_pricing ";
             $db = dbConn();
-            $result = $db->query($sql);
 
-            // Display data on web page
-            while ($row = mysqli_fetch_array($result)) {
-                echo $row['count(*)'];
+            if (isset($_GET['search'])) {
+                $search = $_GET['search'];
+                $countSql = "SELECT count(*) AS count FROM tbl_pricing WHERE Package_Name LIKE '%$search%'";
+            } else {
+                $countSql = "SELECT count(*) AS count FROM tbl_pricing";
+            }
+
+            $countResult = $db->query($countSql);
+
+            if ($countResult) {
+                $countRow = $countResult->fetch_assoc();
+                echo $countRow['count'];
+            } else {
+                echo "0";
             }
             ?>
         </span> Pricing Packages</h5>
+
     <div class="table-responsive">
         <?php
-        $sql = "SELECT * FROM tbl_pricing";
-        $db = dbConn();
+        if (isset($_GET['search'])) {
+            $search = $_GET['search'];
+            $sql = "SELECT * FROM tbl_pricing WHERE Package_Name LIKE '%$search%'";
+        } else {
+            $sql = "SELECT * FROM tbl_pricing";
+        }
         $result = $db->query($sql);
         ?>
+
 
         <table class="table table-striped table-sm">
             <thead>
@@ -68,16 +81,17 @@
                             <td><?= $row['Price'] ?></td>
                             <td><?= $row['Months'] ?></td>
                             <td><?= $row['Desc1'] ?></td>
-                            
-<!--                            <td ><?php
+
+                                <!--                            <td ><?php
 //                                if ($row['Status'] == 1) {
 //                                    echo '<p><a href="package_status.php?PricingId=' . $row['PricingId'] . '&Status=0" class="text-success">Active</a></p>';
 //                                } else {
 //                                    echo'<p><a href="package_status.php?PricingId=' . $row['PricingId'] . '&Status=1" class="text-danger">Deactive</a></p>';
 //                                }
-//                                ?>
-                            </td>-->
-                            
+//                                
+                            ?>
+                                </td>-->
+
                             <td>
                                 <span style=" width: 100px;" class="badge <?php echo $row['Status'] ? 'bg-success' : 'bg-danger' ?>"><?php echo $row['Status'] == 1 ? 'Activated' : 'Deactivated' ?></span>
                             </td>
@@ -93,13 +107,15 @@
 
                                 </form>
 
-<!--                                <a href="edit_packages.php?PricingId=<?//= $row['PricingId'] ?>">View</a>-->
+                                <!--                                <a href="edit_packages.php?PricingId=<?//= $row['PricingId'] ?>">View</a>-->
                             </td>
 
                         </tr>
                         <?php
                         $i++;
                     }
+                } else {
+                    echo "<tr><td colspan='5'>No packages found.</td></tr>";
                 }
                 ?>
 

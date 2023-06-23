@@ -8,7 +8,7 @@
 
             <div class="section-header">
                 <h2>Our Services</h2>
-                <p>Ea vitae aspernatur deserunt voluptatem impedit deserunt magnam occaecati dssumenda quas ut ad dolores adipisci aliquam.</p>
+                <p>Explore our services and get to know what we give you!</p>
             </div>
 
             <?php

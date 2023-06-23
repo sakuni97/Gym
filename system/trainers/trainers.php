@@ -1,3 +1,4 @@
+<?php $trainers = "active" ?>
 <?php include '../header.php'; ?>
 <?php include '../menu.php'; ?>
 
@@ -7,12 +8,12 @@
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
                 <a href="<?= SYSTEM_PATH ?>/admin/add_users.php" class="btn btn-sm btn-outline-secondary">New Trainers</a>
-                <button type="button" class="btn btn-sm btn-outline-secondary">Search Trainers</button>
+                <form action="<?= $_SERVER['PHP_SELF'] ?>" method="GET" class="btn-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search By Name">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Search</button>
+                </form>
             </div>
-            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                <span data-feather="calendar" class="align-text-bottom"></span>
-                Update Trainers
-            </button>
+            
         </div>
     </div>
     <?php
@@ -39,6 +40,12 @@
         <?php
         $sql = "SELECT * FROM tbl_users WHERE UserRole ='trainer'";
         $db = dbConn();
+        if (isset($_GET['search'])) {
+            $search = $_GET['search'];
+            $sql = "SELECT * FROM tbl_users WHERE UserRole ='trainer' AND FirstName LIKE '%$search%' OR LastName LIKE '%$search%'";
+        } else {
+            $sql = "SELECT * FROM tbl_users WHERE UserRole ='trainer'";
+        }
         $result = $db->query($sql);
 //        if($result){
 //            while($row= mysqli_fetch_assoc($result))
@@ -54,6 +61,7 @@
                     <th scope="col">Active Status</th>
                     <th scope="col">Update Status</th>
                     <th scope="col">Details</th>
+                    <th scope="col">Assigned Members</th>
 
                 </tr>
             </thead>
@@ -61,6 +69,7 @@
                 <?php
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
+                        $UserId = $row['UserId'];
                         ?>
                         <tr>
                             <td><?= $row['Title'] ?> </td>
@@ -84,6 +93,18 @@
                                     <button type="submit" name="action" value="edit">View</button>
 
                                 </form>
+                            </td>
+
+                            <td>
+                                <?php
+                                $db = dbConn();
+                               $sql = "SELECT count(*) FROM tbl_members WHERE UserId='$UserId' AND Status=1 AND Approval_Status=1";
+
+                                $results = $db->query($sql);
+                                while ($row = mysqli_fetch_array($results)) {
+                                    echo $row['count(*)'];
+                                }
+                                ?>
                             </td>
 
                         </tr>

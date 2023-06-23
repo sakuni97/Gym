@@ -18,8 +18,19 @@
                         </div>
                     </div>
 
-                    <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
-
+<!--                    <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>-->
+                    <div class="row">
+                        <div class="col-md-6"><canvas id="myChart"></canvas></div>
+                         <div class="col-md-6"><canvas id="myChart1"></canvas></div>                 
+                    </div>
+                     <div class="row">
+                       <div class="col-md-6"><canvas id="myChart2"></canvas></div>
+                        <div class="col-md-6"><canvas id="myChart3"></canvas></div>
+                     </div>
+                         <div class="row">
+                       <div class="col-md-6"><canvas id="myChart4"></canvas></div>
+                        <div class="col-md-6"><canvas id="myCharta"></canvas></div>
+                     </div>
                     <h2>Section title</h2>
                     <div class="table-responsive">
                         <table class="table table-striped table-sm">
